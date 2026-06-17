@@ -30,7 +30,9 @@ export const WORLDS: { key: WorldKey; label: string; short: string; color: strin
 const currentWorld = ref<WorldKey>('home')
 const lastInteraction = ref<number>(Date.now())
 const isIdle = ref(false)
-const idleTimeoutMs = 30_000
+// === Barton 2nd Floor lobby mode: this is a focused wayfinding screen.
+// Idle slideshow is disabled — the page must remain the active, single view.
+const idleTimeoutMs = Infinity
 
 const IDLE_EVENTS = ['pointerdown', 'pointermove', 'keydown', 'wheel', 'touchstart'] as const
 let idleTimer: ReturnType<typeof setInterval> | null = null

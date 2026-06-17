@@ -1,1 +1,0 @@
-import{_ as s,x as a,y as t,Y as o}from"./BGR1d49v.js";const c={},n={class:"splash-shell"};function r(e,d){return a(),t("div",n,[o(e.$slots,"default",{},void 0)])}const _=s(c,[["render",r],["__scopeId","data-v-7d590e7a"]]);export{_ as default};
