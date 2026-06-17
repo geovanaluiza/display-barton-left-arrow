@@ -527,9 +527,10 @@ const admission = {
 }
 .hours-time-main {
   font-family: var(--font-serif);
-  font-size: 26px; line-height: 1;
+  font-size: 22px; line-height: 1.05;
   color: var(--nu-midnight);
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 .hours-block-divider {
   height: 1px;
@@ -596,9 +597,10 @@ const admission = {
 .contact-card { display: flex; flex-direction: column; }
 .contact-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr 1fr;
   grid-auto-rows: 1fr;
   align-items: stretch;
+  justify-items: stretch;
   gap: 12px;
   flex: 1;
 }
@@ -608,8 +610,7 @@ const admission = {
   gap: 12px;
   width: 100%;
   height: 100%;
-  min-height: 96px;
-  padding: 16px 14px;
+  padding: 18px 14px;
   background: var(--nu-powder);
   border-radius: 16px;
   border: 1px solid var(--nu-cloud);
