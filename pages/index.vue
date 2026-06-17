@@ -115,53 +115,49 @@ const admission = {
         <!-- HOURS -->
         <div class="info-card hours-card">
           <div class="info-eyebrow">Office Hours</div>
-          <h2 class="info-title">When we are open</h2>
-          <ul class="hours-list">
-            <li v-for="h in admission.hours" :key="h.day" class="hours-row">
-              <span class="hours-day">{{ h.day }}</span>
-              <span class="hours-time">{{ h.time }}</span>
-            </li>
-          </ul>
-          <div class="hours-closed">Closed weekends &amp; university holidays</div>
+          <div class="hours-block">
+            <div class="hours-main">
+              <span class="hours-days">Mon&ndash;Thu</span>
+              <span class="hours-time-main">8:00 AM &ndash; 5:00 PM</span>
+            </div>
+            <div class="hours-block-divider" />
+            <div class="hours-main">
+              <span class="hours-days">Friday</span>
+              <span class="hours-time-main">8:00 AM &ndash; 4:00 PM</span>
+            </div>
+          </div>
+          <div class="hours-closed">Closed weekends</div>
         </div>
 
         <!-- WHAT TO EXPECT -->
         <div class="info-card expect-card">
           <div class="info-eyebrow">What to expect</div>
-          <h2 class="info-title">Bring this, leave with this</h2>
-          <ul class="expect-list">
-            <li v-for="(w, i) in admission.what" :key="i" class="expect-row">
-              <span class="expect-icon">{{ w.icon }}</span>
-              <span class="expect-text">{{ w.text }}</span>
+          <ul class="expect-icons">
+            <li v-for="(w, i) in admission.what" :key="i" class="expect-icon-item" :title="w.text">
+              <span class="expect-icon-mark">{{ w.icon }}</span>
             </li>
           </ul>
+          <div class="expect-summary">Help with applications, tours, aid questions, and a free Northwest t-shirt.</div>
         </div>
 
         <!-- CONTACT -->
         <div class="info-card contact-card">
           <div class="info-eyebrow">Reach us</div>
-          <h2 class="info-title">Save our number</h2>
-          <a class="contact-row" :href="`tel:${admission.phone.replace(/[^0-9+]/g, '')}`">
-            <span class="contact-icon">☎</span>
-            <div>
-              <div class="contact-label">Call</div>
-              <div class="contact-value">{{ admission.phone }}</div>
-            </div>
-          </a>
-          <a class="contact-row" :href="`mailto:${admission.email}`">
-            <span class="contact-icon">✉</span>
-            <div>
-              <div class="contact-label">Email</div>
-              <div class="contact-value">{{ admission.email }}</div>
-            </div>
-          </a>
-          <div class="contact-row contact-row--static">
-            <span class="contact-icon">⌂</span>
-            <div>
-              <div class="contact-label">Visit</div>
-              <div class="contact-value">{{ admission.building }}<br/>2nd Floor</div>
+          <div class="contact-grid">
+            <a class="contact-mini" :href="`tel:${admission.phone.replace(/[^0-9+]/g, '')}`" title="Call">
+              <span class="contact-mini-icon">☎</span>
+              <span class="contact-mini-label">Call</span>
+            </a>
+            <a class="contact-mini" :href="`mailto:${admission.email}`" title="Email">
+              <span class="contact-mini-icon">✉</span>
+              <span class="contact-mini-label">Email</span>
+            </a>
+            <div class="contact-mini contact-mini--static" title="Visit">
+              <span class="contact-mini-icon">⌂</span>
+              <span class="contact-mini-label">Visit</span>
             </div>
           </div>
+          <div class="contact-detail">Barton Hall &middot; 2nd Floor</div>
         </div>
       </div>
 
@@ -196,7 +192,11 @@ const admission = {
   overflow: hidden;
   background: var(--nu-midnight);
 }
-.hero-photo { position: absolute; inset: 0; }
+.hero-photo {
+  position: absolute; inset: 0;
+  filter: blur(2px) brightness(0.7) saturate(0.85);
+  transform: scale(1.04);
+}
 .hero-photo img {
   width: 100%; height: 100%;
   object-fit: cover; object-position: center;
@@ -209,8 +209,8 @@ const admission = {
 .hero-veil {
   position: absolute; inset: 0;
   background:
-    linear-gradient(90deg, rgba(0, 38, 61, 0.85) 0%, rgba(0, 38, 61, 0.45) 50%, rgba(0, 38, 61, 0.10) 80%, rgba(0, 38, 61, 0.0) 100%),
-    linear-gradient(180deg, rgba(0, 38, 61, 0.35) 0%, rgba(0, 38, 61, 0.0) 25%, rgba(0, 38, 61, 0.0) 60%, rgba(0, 38, 61, 0.78) 100%);
+    linear-gradient(90deg, rgba(0, 38, 61, 0.92) 0%, rgba(0, 38, 61, 0.72) 40%, rgba(0, 38, 61, 0.45) 70%, rgba(0, 38, 61, 0.25) 100%),
+    linear-gradient(180deg, rgba(0, 38, 61, 0.55) 0%, rgba(0, 38, 61, 0.10) 25%, rgba(0, 38, 61, 0.10) 55%, rgba(0, 38, 61, 0.88) 100%);
 }
 
 /* "You are here" pin (top-left of hero) */
@@ -467,115 +467,122 @@ const admission = {
 }
 
 /* HOURS */
-.hours-list {
-  list-style: none; margin: 0; padding: 0;
+/* === HOURS (compact, two rows) === */
+.hours-block {
   display: flex; flex-direction: column;
+  gap: 22px;
   flex: 1;
 }
-.hours-row {
-  display: flex; justify-content: space-between; align-items: center;
+.hours-main {
+  display: flex; flex-direction: column;
   gap: 8px;
-  padding: 16px 0;
-  border-bottom: 1px solid var(--nu-cloud);
-  font-size: 16px;
 }
-.hours-row:last-child { border-bottom: none; }
-.hours-day {
-  font-weight: 700;
-  color: var(--nu-navy);
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-  font-size: 16px;
-  flex-shrink: 0;
+.hours-days {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.32em; text-transform: uppercase;
+  color: var(--nu-blue);
 }
-.hours-time {
+.hours-time-main {
   font-family: var(--font-serif);
+  font-size: 32px; line-height: 1;
   color: var(--nu-midnight);
-  font-size: 15px;
   font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-  text-align: right;
+}
+.hours-block-divider {
+  height: 1px;
+  background: var(--nu-cloud);
 }
 .hours-closed {
-  margin-top: 18px;
-  padding: 12px 16px;
-  background: var(--nu-powder);
-  border-left: 3px solid var(--nu-amber);
-  border-radius: 8px;
-  font-size: 14px;
+  margin-top: 22px;
+  font-size: 13px;
   color: var(--nu-navy);
+  opacity: 0.6;
+  letter-spacing: 0.04em;
 }
 
-/* EXPECT */
-.expect-list {
+/* === WHAT TO EXPECT (icons + summary) === */
+.expect-icons {
   list-style: none; margin: 0; padding: 0;
-  display: flex; flex-direction: column;
-  gap: 16px;
+  display: flex; gap: 14px;
+  margin-bottom: 24px;
 }
-.expect-row {
-  display: flex; align-items: flex-start; gap: 18px;
-  padding: 18px 20px;
+.expect-icon-item {
+  flex: 1;
+  display: flex; align-items: center; justify-content: center;
+  aspect-ratio: 1;
   background: var(--nu-powder);
   border-radius: 16px;
   border: 1px solid var(--nu-cloud);
-  transition: transform 0.3s var(--ease-out-soft), box-shadow 0.3s;
+  transition: transform 0.3s var(--ease-out-soft), box-shadow 0.3s, border-color 0.3s;
+  cursor: help;
 }
-.expect-row:hover {
-  transform: translateX(6px);
-  box-shadow: 0 6px 16px rgba(0, 38, 61, 0.08);
+.expect-icon-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 18px rgba(0, 38, 61, 0.10);
+  border-color: var(--nu-blue);
 }
-.expect-icon {
+.expect-icon-mark {
   font-family: var(--font-serif);
+  font-size: 38px;
+  color: var(--nu-blue);
+  line-height: 1;
+}
+.expect-summary {
+  font-size: 15px; line-height: 1.55;
+  color: var(--nu-navy);
+  font-weight: 500;
+  padding-top: 24px;
+  border-top: 1px solid var(--nu-cloud);
+  margin-top: auto;
+}
+
+/* === CONTACT (compact icon grid) === */
+.contact-card { display: flex; flex-direction: column; }
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  flex: 1;
+}
+.contact-mini {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 10px;
+  padding: 24px 8px;
+  background: var(--nu-powder);
+  border-radius: 16px;
+  border: 1px solid var(--nu-cloud);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.3s var(--ease-out-soft), box-shadow 0.3s, border-color 0.3s, background 0.3s;
+  cursor: pointer;
+}
+.contact-mini:hover {
+  transform: translateY(-3px);
+  background: var(--nu-wisp);
+  box-shadow: 0 10px 22px rgba(0, 38, 61, 0.10);
+  border-color: var(--nu-blue);
+}
+.contact-mini-icon {
   font-size: 30px;
   color: var(--nu-blue);
   line-height: 1;
-  flex-shrink: 0;
-  width: 36px; text-align: center;
 }
-.expect-text {
-  font-size: 17px; line-height: 1.45;
-  color: var(--nu-midnight);
-  font-weight: 500;
-}
-
-/* CONTACT */
-.contact-card { display: flex; flex-direction: column; }
-.contact-row {
-  display: flex; align-items: center; gap: 18px;
-  padding: 18px 0;
-  border-bottom: 1px solid var(--nu-cloud);
-  text-decoration: none;
-  color: inherit;
-  transition: transform 0.2s;
-}
-.contact-row:hover:not(.contact-row--static) {
-  transform: translateX(4px);
-}
-.contact-row:last-child { border-bottom: none; }
-.contact-icon {
-  font-size: 32px;
-  width: 48px; height: 48px;
-  border-radius: 12px;
-  background: var(--nu-powder);
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-  color: var(--nu-blue);
-}
-.contact-label {
+.contact-mini-label {
   font-size: 11px; font-weight: 700;
-  letter-spacing: 0.28em; text-transform: uppercase;
+  letter-spacing: 0.22em; text-transform: uppercase;
   color: var(--nu-navy);
-  opacity: 0.7;
-  margin-bottom: 2px;
 }
-.contact-value {
+.contact-detail {
+  margin-top: 22px;
+  padding-top: 22px;
+  border-top: 1px solid var(--nu-cloud);
   font-family: var(--font-serif);
-  font-size: 18px;
+  font-size: 17px;
   color: var(--nu-midnight);
   font-weight: 700;
-  word-break: break-word;
-  overflow-wrap: break-word;
-  line-height: 1.2;
+  letter-spacing: 0.02em;
+  text-align: center;
 }
 
 .bottom-hint {
