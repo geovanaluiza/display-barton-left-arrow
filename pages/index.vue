@@ -638,7 +638,7 @@ const admission = {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-auto-rows: 1fr;
-  gap: 14px;
+  gap: 22px;
   margin-bottom: 24px;
   align-items: stretch;
 }
