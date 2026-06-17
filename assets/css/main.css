@@ -1,0 +1,397 @@
+/* =========================================================
+   NORTHWEST UNIVERSITY — INTERACTIVE DISPLAY
+   Global stylesheet. Locked palette. Touch-first.
+   ========================================================= */
+
+:root {
+  /* Brand */
+  --nu-blue:       #0068bb;
+  --nu-navy:       #034c87;
+  --nu-midnight:   #00263d;
+  --nu-alt:        #148dcd;
+  --nu-sky:        #95c5ea;
+  --nu-skylight:   #b4d4f0;
+  --nu-tour:       #fbd945;
+  --nu-amber:      #ffbc2d;
+  --nu-leaf:       #44ba82;
+  --nu-powder:     #eaf4fb;
+  --nu-cloud:      #f1f2f2;
+  --nu-wisp:       #f9f9f9;
+
+  /* Type */
+  --font-serif: "Times New Roman", "Times", "Tinos", serif;
+  --font-sans:  -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                "Helvetica Neue", Arial, sans-serif;
+
+  /* Layout */
+  --max-w: 1080px;
+  --max-h: 1920px;
+  --safe-pad: 56px;
+  --gutter:  48px;
+
+  /* Motion */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast:  220ms;
+  --dur-med:   420ms;
+  --dur-slow:  720ms;
+}
+
+* { box-sizing: border-box; }
+html, body, #__nuxt { margin: 0; padding: 0; height: 100%; width: 100%; }
+html {
+  /* Lock down browser-level zoom, but allow vertical panning so the
+     in-page scroll containers can receive scroll gestures. */
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: manipulation;
+}
+body {
+  font-family: var(--font-sans);
+  color: var(--nu-midnight);
+  background: #000;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  position: fixed;
+  inset: 0;
+}
+
+/* The "stage" is a fixed 1080×1920 box, scaled to fit the viewport.
+   Anything outside it is masked black. This guarantees the app
+   always renders at exactly 1080×1920 internal coordinates, regardless
+   of device resolution. */
+.stage {
+  position: absolute;
+  top: 0; left: 0;
+  width: 1080px;
+  height: 1920px;
+  transform-origin: top left;
+  background: var(--nu-wisp);
+  overflow: hidden;
+}
+
+button { font-family: inherit; cursor: pointer; }
+img { display: block; max-width: 100%; }
+
+h1, h2, h3, h4 {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+a { color: var(--nu-blue); }
+
+/* =========================================================
+   Layout primitives
+   ========================================================= */
+
+.screen {
+  position: fixed; inset: 0;
+  width: 100vw; height: 100vh;
+  overflow: hidden;
+  background: var(--nu-wisp);
+}
+
+.safe {
+  position: relative;
+  width: 100%; height: 100%;
+  padding: var(--safe-pad);
+  display: flex; flex-direction: column;
+}
+
+.row { display: flex; align-items: center; }
+.col { display: flex; flex-direction: column; }
+.gap-1 { gap: 12px; } .gap-2 { gap: 24px; } .gap-3 { gap: 36px; }
+.gap-4 { gap: 48px; } .gap-5 { gap: 64px; } .gap-6 { gap: 96px; }
+.flex-1 { flex: 1; }
+.center  { justify-content: center; align-items: center; }
+.between { justify-content: space-between; }
+.grow    { flex-grow: 1; }
+
+/* =========================================================
+   Buttons & touch targets
+   ========================================================= */
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 72px; min-width: 72px;
+  padding: 0 36px;
+  border: none; border-radius: 999px;
+  font-family: var(--font-sans);
+  font-size: 22px; font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: transform var(--dur-fast) var(--ease-out-soft),
+              background var(--dur-fast) var(--ease-out-soft),
+              box-shadow var(--dur-fast) var(--ease-out-soft);
+}
+.btn:active { transform: scale(0.97); }
+
+.btn-primary { background: var(--nu-tour); color: var(--nu-midnight); }
+.btn-primary:hover { background: var(--nu-amber); }
+
+.btn-secondary { background: var(--nu-blue); color: var(--nu-wisp); }
+.btn-secondary:hover { background: var(--nu-navy); }
+
+.btn-ghost {
+  background: transparent; color: var(--nu-midnight);
+  border: 2px solid var(--nu-midnight);
+}
+.btn-ghost:hover { background: var(--nu-midnight); color: var(--nu-wisp); }
+
+.chip {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 14px 28px;
+  border-radius: 999px;
+  background: var(--nu-powder);
+  color: var(--nu-navy);
+  font-size: 18px; font-weight: 600;
+  transition: background var(--dur-fast) var(--ease-out-soft),
+              color var(--dur-fast) var(--ease-out-soft);
+  min-height: 56px;
+}
+.chip.is-active { background: var(--nu-navy); color: var(--nu-wisp); }
+.chip:active { transform: scale(0.97); }
+
+/* =========================================================
+   Cards
+   ========================================================= */
+
+.card {
+  position: relative;
+  border-radius: 28px;
+  overflow: hidden;
+  background: var(--nu-cloud);
+  box-shadow: 0 8px 24px rgba(0, 38, 61, 0.08);
+  transition: transform var(--dur-med) var(--ease-out-soft),
+              box-shadow var(--dur-med) var(--ease-out-soft);
+}
+.card:hover { transform: translateY(-6px); box-shadow: 0 16px 36px rgba(0, 38, 61, 0.14); }
+.card:active { transform: translateY(-2px) scale(0.99); }
+
+.card-photo {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+  transition: transform 1.2s var(--ease-out-soft);
+}
+.card:hover .card-photo { transform: scale(1.05); }
+
+.card-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(0,38,61,0) 30%, rgba(0,38,61,0.85) 100%);
+}
+
+.card-body {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 32px;
+  color: var(--nu-wisp);
+}
+.card-eyebrow {
+  font-size: 16px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--nu-tour);
+  margin-bottom: 12px;
+}
+.card-title {
+  font-family: var(--font-serif);
+  font-size: 32px; line-height: 1.15;
+  color: var(--nu-wisp);
+  margin-bottom: 8px;
+}
+.card-meta { font-size: 18px; color: var(--nu-skylight); }
+
+/* =========================================================
+   Headings & text
+   ========================================================= */
+
+.eyebrow {
+  font-size: 18px; font-weight: 700;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--nu-blue);
+}
+
+.display-1 { font-family: var(--font-serif); font-size: 88px;  line-height: 0.95; color: var(--nu-midnight); }
+.display-2 { font-family: var(--font-serif); font-size: 64px;  line-height: 1.02; color: var(--nu-midnight); }
+.display-3 { font-family: var(--font-serif); font-size: 48px;  line-height: 1.08; color: var(--nu-midnight); }
+.h2 { font-family: var(--font-serif); font-size: 40px; line-height: 1.1; color: var(--nu-midnight); }
+.h3 { font-family: var(--font-serif); font-size: 30px; line-height: 1.2; color: var(--nu-midnight); }
+.lede { font-size: 22px; line-height: 1.5; color: var(--nu-navy); max-width: 36ch; }
+.body { font-size: 20px; line-height: 1.5; color: var(--nu-midnight); }
+.muted { color: var(--nu-navy); opacity: 0.7; }
+
+.italic { font-style: italic; }
+.serif { font-family: var(--font-serif); }
+
+/* =========================================================
+   World shells
+   ========================================================= */
+
+.world {
+  position: absolute; inset: 0;
+  background: var(--nu-wisp);
+  display: flex; flex-direction: column;
+  padding: var(--safe-pad);
+  overflow: hidden;
+}
+
+.world-header {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 32px;
+}
+.world-header .display-2 { color: var(--nu-midnight); }
+.world-header .eyebrow { color: var(--nu-blue); margin-bottom: 12px; }
+
+.world-body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.world-body::-webkit-scrollbar { display: none; }
+
+/* =========================================================
+   Animations
+   ========================================================= */
+
+@keyframes fadeIn   { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeUp   { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: none; } }
+@keyframes fadeRight{ from { opacity: 0; transform: translateX(-40px); } to { opacity: 1; transform: none; } }
+@keyframes scaleIn  { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: none; } }
+@keyframes kenburns { from { transform: scale(1.05); } to { transform: scale(1.18); } }
+@keyframes drift    { 0% { transform: translateY(0); } 50% { transform: translateY(-8px); } 100% { transform: translateY(0); } }
+@keyframes pulse    { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+@keyframes shimmer  { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+@keyframes drawIn   { from { stroke-dashoffset: 1000; } to { stroke-dashoffset: 0; } }
+@keyframes twinkle  { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+@keyframes bounceIn { 0%   { transform: scale(0.85); opacity: 0; } 60% { transform: scale(1.06); } 100% { transform: scale(1); opacity: 1; } }
+@keyframes wiggle   { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-2deg); } 75% { transform: rotate(2deg); } }
+@keyframes glow     { 0%, 100% { box-shadow: 0 0 0 0 rgba(255, 199, 44, 0); } 50% { box-shadow: 0 0 24px 4px rgba(255, 199, 44, 0.4); } }
+@keyframes floatY   { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes tapPop   { 0% { transform: scale(1); } 50% { transform: scale(0.94); } 100% { transform: scale(1); } }
+@keyframes slideUp  { from { transform: translateY(12px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes confetti-fall { 0% { transform: translateY(-20px) rotate(0); opacity: 0; } 10% { opacity: 1; } 100% { transform: translateY(420px) rotate(720deg); opacity: 0; } }
+
+.enter-fade   { animation: fadeIn    var(--dur-med) var(--ease-out-soft) both; }
+.enter-fade-up{ animation: fadeUp    var(--dur-slow) var(--ease-out-soft) both; }
+.enter-fade-right { animation: fadeRight var(--dur-slow) var(--ease-out-soft) both; }
+.enter-scale  { animation: scaleIn   var(--dur-slow) var(--ease-out-soft) both; }
+.drift        { animation: drift 7s ease-in-out infinite; }
+.pulse        { animation: pulse 2.4s ease-in-out infinite; }
+.kenburns     { animation: kenburns 18s ease-in-out infinite alternate; }
+.twinkle      { animation: twinkle 3s ease-in-out infinite; }
+
+.delay-1 { animation-delay: 80ms; }
+.delay-2 { animation-delay: 160ms; }
+.delay-3 { animation-delay: 240ms; }
+.delay-4 { animation-delay: 320ms; }
+.delay-5 { animation-delay: 400ms; }
+.delay-6 { animation-delay: 480ms; }
+
+/* Stagger helper */
+.stagger > * { animation: fadeUp var(--dur-slow) var(--ease-out-soft) both; }
+.stagger > *:nth-child(1) { animation-delay:  60ms; }
+.stagger > *:nth-child(2) { animation-delay: 140ms; }
+.stagger > *:nth-child(3) { animation-delay: 220ms; }
+.stagger > *:nth-child(4) { animation-delay: 300ms; }
+.stagger > *:nth-child(5) { animation-delay: 380ms; }
+.stagger > *:nth-child(6) { animation-delay: 460ms; }
+.stagger > *:nth-child(7) { animation-delay: 540ms; }
+.stagger > *:nth-child(8) { animation-delay: 620ms; }
+
+/* =========================================================
+   Page transitions
+   ========================================================= */
+
+.page-enter-active, .page-leave-active {
+  transition: transform var(--dur-slow) var(--ease-in-out-soft),
+              opacity   var(--dur-slow) var(--ease-in-out-soft);
+}
+.page-enter-from { transform: translateX(60px); opacity: 0; }
+.page-leave-to   { transform: translateX(-60px); opacity: 0; }
+
+/* =========================================================
+   Misc
+   ========================================================= */
+
+.glass {
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--nu-sky), transparent);
+  margin: 32px 0;
+}
+
+.dot {
+  display: inline-block;
+  width: 10px; height: 10px;
+  border-radius: 999px;
+  background: var(--nu-leaf);
+  margin-right: 12px;
+  vertical-align: middle;
+}
+
+.gradient-blue {
+  background: linear-gradient(135deg, var(--nu-midnight) 0%, var(--nu-navy) 50%, var(--nu-blue) 100%);
+  color: var(--nu-wisp);
+}
+.gradient-sky {
+  background: linear-gradient(135deg, var(--nu-powder) 0%, var(--nu-skylight) 50%, var(--nu-sky) 100%);
+  color: var(--nu-midnight);
+}
+
+/* === INTERACTIVE ENHANCEMENTS === */
+.tap-pop:active { animation: tapPop 0.25s var(--ease-out-soft); }
+.float-y       { animation: floatY 4s ease-in-out infinite; }
+.wiggle:hover  { animation: wiggle 0.5s ease-in-out; }
+.glow-on-hover:hover { animation: glow 1.2s ease-in-out infinite; }
+.bounce-in     { animation: bounceIn 0.7s var(--ease-out-soft) both; }
+.slide-up      { animation: slideUp 0.5s var(--ease-out-soft) both; }
+
+.hover-lift {
+  transition: transform 0.3s var(--ease-out-soft), box-shadow 0.3s var(--ease-out-soft);
+}
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px rgba(0, 38, 61, 0.18);
+}
+.hover-tilt {
+  transition: transform 0.4s var(--ease-out-soft);
+}
+.hover-tilt:hover { transform: rotate(-0.6deg) scale(1.02); }
+.hover-glow {
+  transition: box-shadow 0.3s var(--ease-out-soft);
+}
+.hover-glow:hover { box-shadow: 0 0 0 4px rgba(255, 199, 44, 0.4); }
+
+.tap-ripple {
+  position: relative;
+  overflow: hidden;
+}
+.tap-ripple::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--rx, 50%) var(--ry, 50%), rgba(255, 199, 44, 0.5) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+.tap-ripple:active::after { opacity: 1; transition: opacity 0s; }
+
+.skeleton {
+  background: linear-gradient(90deg, var(--nu-cloud) 0%, var(--nu-powder) 50%, var(--nu-cloud) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s linear infinite;
+}

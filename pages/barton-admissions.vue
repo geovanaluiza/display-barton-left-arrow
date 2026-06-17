@@ -1,0 +1,652 @@
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+
+// === Barton 2nd Floor Lobby — directs new students & parents to Admissions ===
+// A single-purpose, focused wayfinding screen.
+// "You are here" pin on the map + a massive right arrow pointing to
+// the Admission Office, plus practical info: hours, what to expect,
+// and a friendly welcome.
+
+const visible = ref(false)
+onMounted(() => {
+  setTimeout(() => { visible.value = true }, 80)
+})
+
+// === Hero photo of the campus ===
+const lobbyPhoto = '251014CampusSunrise-5787.jpg'
+
+// === Admission Office essentials ===
+const admission = {
+  name: 'Office of Admissions',
+  tagline: 'Welcome to Northwest. We are so glad you are here.',
+  building: 'Barton Hall, 2nd Floor',
+  room: 'Suite 215',
+  direction: 'Turn right out of the elevator. The Office of Admissions is the second door on your right.',
+  hours: [
+    { day: 'Monday',     time: '8:00 AM – 5:00 PM' },
+    { day: 'Tuesday',    time: '8:00 AM – 5:00 PM' },
+    { day: 'Wednesday',  time: '8:00 AM – 5:00 PM' },
+    { day: 'Thursday',   time: '8:00 AM – 5:00 PM' },
+    { day: 'Friday',     time: '8:00 AM – 4:00 PM' }
+  ],
+  phone: '425-822-8266',
+  email: 'admissions@northwestu.edu',
+  what: [
+    { icon: '✦', text: 'Application help — bring transcripts and test scores if you have them.' },
+    { icon: '◈', text: 'Campus tour scheduling — leave with a date on the calendar.' },
+    { icon: '✣', text: 'Financial aid questions — counselors are on site.' },
+    { icon: '✱', text: 'A free Northwest t-shirt for every visitor.' }
+  ]
+}
+</script>
+
+<template>
+  <div class="barton" :class="{ 'is-loaded': visible }">
+    <!-- ============ HERO: Lobby photo + huge right arrow ============ -->
+    <section class="hero">
+      <div class="hero-photo">
+        <img :src="`/images/${lobbyPhoto}`" alt="Barton Hall lobby" />
+      </div>
+      <div class="hero-veil" />
+
+      <!-- "You are here" pin -->
+      <div class="you-are-here">
+        <div class="here-pulse" />
+        <div class="here-ping" />
+        <div class="here-dot" />
+        <div class="here-label">
+          <span class="here-eyebrow">You are here</span>
+          <span class="here-name">Barton 2nd Floor</span>
+        </div>
+      </div>
+
+      <!-- The massive right arrow -->
+      <div class="big-arrow" aria-hidden="true">
+        <span class="arrow-bar" />
+        <span class="arrow-head">
+          <span class="arrow-tip" />
+        </span>
+        <span class="arrow-bar arrow-bar--bottom" />
+      </div>
+
+      <div class="hero-content">
+        <div class="hero-eyebrow">
+          <span class="ey-dot" />
+          Barton Hall Lobby
+        </div>
+        <h1 class="hero-title">
+          Welcome,<br/>
+          <span class="hero-accent">future Eagle.</span>
+        </h1>
+        <p class="hero-blurb">
+          Head <strong>right</strong> down the hall to the
+          <strong>Office of Admissions</strong> — Suite 215.
+          We are waiting for you.
+        </p>
+        <div class="hero-meta">
+          <span><strong>↗</strong> Turn right out of the elevator</span>
+          <span class="dot" />
+          <span><strong>215</strong> Second door on your right</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ INFO: hours + what to expect ============ -->
+    <section class="info">
+      <div class="info-grid">
+        <!-- HOURS -->
+        <div class="info-card hours-card">
+          <div class="info-eyebrow">Office Hours</div>
+          <h2 class="info-title">When we are open</h2>
+          <ul class="hours-list">
+            <li v-for="h in admission.hours" :key="h.day" class="hours-row">
+              <span class="hours-day">{{ h.day }}</span>
+              <span class="hours-time">{{ h.time }}</span>
+            </li>
+          </ul>
+          <div class="hours-closed">Closed weekends &amp; university holidays</div>
+        </div>
+
+        <!-- WHAT TO EXPECT -->
+        <div class="info-card expect-card">
+          <div class="info-eyebrow">What to expect</div>
+          <h2 class="info-title">Bring this, leave with this</h2>
+          <ul class="expect-list">
+            <li v-for="(w, i) in admission.what" :key="i" class="expect-row">
+              <span class="expect-icon">{{ w.icon }}</span>
+              <span class="expect-text">{{ w.text }}</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- CONTACT -->
+        <div class="info-card contact-card">
+          <div class="info-eyebrow">Reach us</div>
+          <h2 class="info-title">Save our number</h2>
+          <a class="contact-row" :href="`tel:${admission.phone.replace(/[^0-9+]/g, '')}`">
+            <span class="contact-icon">☎</span>
+            <div>
+              <div class="contact-label">Call</div>
+              <div class="contact-value">{{ admission.phone }}</div>
+            </div>
+          </a>
+          <a class="contact-row" :href="`mailto:${admission.email}`">
+            <span class="contact-icon">✉</span>
+            <div>
+              <div class="contact-label">Email</div>
+              <div class="contact-value">{{ admission.email }}</div>
+            </div>
+          </a>
+          <div class="contact-row contact-row--static">
+            <span class="contact-icon">⌂</span>
+            <div>
+              <div class="contact-label">Visit</div>
+              <div class="contact-value">{{ admission.building }} · {{ admission.room }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Direction strip -->
+      <div class="direction-strip">
+        <div class="ds-step">
+          <span class="ds-num">1</span>
+          <span class="ds-text">Step out of the elevator and <strong>turn right</strong></span>
+        </div>
+        <div class="ds-arrow">→</div>
+        <div class="ds-step">
+          <span class="ds-num">2</span>
+          <span class="ds-text">Walk <strong>~40 feet</strong> down the hall</span>
+        </div>
+        <div class="ds-arrow">→</div>
+        <div class="ds-step">
+          <span class="ds-num">3</span>
+          <span class="ds-text"><strong>Suite 215</strong> — knock, come in, we are glad to see you</span>
+        </div>
+      </div>
+
+      <p class="bottom-hint">
+        Welcome to <strong>Northwest University</strong> &middot; Kirkland, Washington &middot; Since 1934
+      </p>
+    </section>
+  </div>
+</template>
+
+<style scoped>
+.barton {
+  position: absolute; inset: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  background: var(--nu-powder);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.6s var(--ease-out-soft), transform 0.6s var(--ease-out-soft);
+}
+.barton.is-loaded { opacity: 1; transform: none; }
+.barton::-webkit-scrollbar { display: none; }
+
+/* ============ HERO ============ */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 1180px;
+  overflow: hidden;
+  background: var(--nu-midnight);
+}
+.hero-photo { position: absolute; inset: 0; }
+.hero-photo img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  animation: kenburns 28s ease-in-out infinite alternate;
+}
+@keyframes kenburns {
+  0%   { transform: scale(1)    translate(0, 0); }
+  100% { transform: scale(1.08) translate(-1%, -1%); }
+}
+.hero-veil {
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(90deg, rgba(0, 38, 61, 0.88) 0%, rgba(0, 38, 61, 0.55) 45%, rgba(0, 38, 61, 0.05) 75%, rgba(0, 38, 61, 0.0) 100%),
+    linear-gradient(180deg, rgba(0, 38, 61, 0.45) 0%, rgba(0, 38, 61, 0.0) 25%, rgba(0, 38, 61, 0.0) 60%, rgba(0, 38, 61, 0.85) 100%);
+}
+
+/* "You are here" pin (top-left of lobby photo) */
+.you-are-here {
+  position: absolute;
+  top: 16%; left: 6%;
+  z-index: 5;
+  display: flex; align-items: center; gap: 14px;
+  animation: fadeUp 0.8s var(--ease-out-soft) 0.4s both;
+  background: rgba(0, 38, 61, 0.7);
+  padding: 10px 18px 10px 14px;
+  border-radius: 999px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(251, 217, 69, 0.5);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+.here-dot {
+  position: relative;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--nu-tour);
+  border: 4px solid var(--nu-wisp);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 2;
+}
+.here-pulse {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--nu-tour);
+  opacity: 0.7;
+  animation: pulse-here 1.6s ease-out infinite;
+  z-index: 1;
+}
+@keyframes pulse-here {
+  0%   { transform: translate(-50%, -50%) scale(1);   opacity: 0.6; }
+  100% { transform: translate(-50%, -50%) scale(2.4); opacity: 0; }
+}
+.here-ping {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  border: 2px solid var(--nu-tour);
+  opacity: 0;
+  animation: ping 2.2s ease-out infinite;
+  z-index: 1;
+}
+@keyframes ping {
+  0%   { transform: translate(-50%, -50%) scale(0.6); opacity: 0.7; }
+  100% { transform: translate(-50%, -50%) scale(2.0); opacity: 0; }
+}
+.here-label {
+  display: flex; flex-direction: column;
+  color: var(--nu-wisp);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+.here-eyebrow {
+  font-size: 12px; font-weight: 700;
+  letter-spacing: 0.32em; text-transform: uppercase;
+  color: var(--nu-tour);
+  margin-bottom: 2px;
+}
+.here-name {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  color: var(--nu-wisp);
+}
+
+/* The HUGE right arrow */
+.big-arrow {
+  position: absolute;
+  top: 50%; right: 4%;
+  transform: translate(0, -50%);
+  display: flex; align-items: center;
+  z-index: 3;
+  filter: drop-shadow(0 16px 32px rgba(0, 0, 0, 0.45));
+  animation: fadeUp 1s var(--ease-out-soft) 0.5s both, slideRight 4s ease-in-out 1.5s infinite;
+}
+@keyframes slideRight {
+  0%, 100% { transform: translate(0, -50%); }
+  50%      { transform: translate(20px, -50%); }
+}
+.arrow-bar {
+  display: block;
+  width: 360px; height: 36px;
+  background: linear-gradient(90deg, var(--nu-tour) 0%, var(--nu-amber) 100%);
+  border-radius: 4px;
+  position: relative;
+}
+.arrow-bar::before {
+  content: '';
+  position: absolute; inset: 6px 0 6px 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.5) 50%, transparent 100%);
+  background-size: 60px 100%;
+  background-repeat: no-repeat;
+  animation: shimmer 2.2s linear infinite;
+}
+@keyframes shimmer {
+  0%   { background-position: -60px 0; }
+  100% { background-position: calc(100% + 60px) 0; }
+}
+.arrow-head {
+  position: relative;
+  width: 0; height: 0;
+  border-top:    110px solid transparent;
+  border-bottom: 110px solid transparent;
+  border-left:   180px solid var(--nu-amber);
+  margin-left: -2px;
+  filter: drop-shadow(0 8px 16px rgba(255, 188, 45, 0.4));
+}
+.arrow-tip {
+  position: absolute;
+  top: 50%; left: -180px;
+  transform: translate(0, -50%);
+  width: 36px; height: 36px;
+  background: var(--nu-tour);
+  border-radius: 50%;
+  box-shadow: 0 0 0 8px rgba(251, 217, 69, 0.3);
+  animation: pulse-tip 1.6s ease-in-out infinite;
+}
+@keyframes pulse-tip {
+  0%, 100% { box-shadow: 0 0 0 8px rgba(251, 217, 69, 0.3); }
+  50%      { box-shadow: 0 0 0 20px rgba(251, 217, 69, 0); }
+}
+
+/* Hero text content (left side) */
+.hero-content {
+  position: absolute;
+  inset: 0;
+  padding: 80px;
+  display: flex; flex-direction: column;
+  justify-content: center;
+  color: var(--nu-wisp);
+  max-width: 55%;
+  z-index: 2;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 10px;
+  color: var(--nu-tour);
+  font-size: 18px; font-weight: 700;
+  letter-spacing: 0.28em; text-transform: uppercase;
+  margin-bottom: 24px;
+  animation: fadeUp 0.7s var(--ease-out-soft) 0.1s both;
+}
+.ey-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--nu-tour);
+  box-shadow: 0 0 0 4px rgba(251, 217, 69, 0.25);
+  animation: pulse 1.8s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(251, 217, 69, 0.25); }
+  50%      { box-shadow: 0 0 0 12px rgba(251, 217, 69, 0); }
+}
+.hero-title {
+  font-family: var(--font-serif);
+  font-size: 108px;
+  line-height: 0.98;
+  color: var(--nu-wisp);
+  margin: 0 0 32px;
+  letter-spacing: -0.02em;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+  animation: fadeUp 0.8s var(--ease-out-soft) 0.2s both;
+}
+.hero-accent {
+  color: var(--nu-tour);
+  font-style: italic;
+}
+.hero-blurb {
+  font-size: 28px;
+  line-height: 1.4;
+  color: var(--nu-skylight);
+  margin: 0 0 32px;
+  max-width: 22ch;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+  animation: fadeUp 0.8s var(--ease-out-soft) 0.3s both;
+}
+.hero-blurb strong {
+  color: var(--nu-tour);
+  font-weight: 800;
+}
+.hero-meta {
+  display: flex; align-items: center; gap: 18px;
+  font-size: 16px; font-weight: 600;
+  color: var(--nu-wisp);
+  background: rgba(0, 38, 61, 0.55);
+  padding: 14px 22px;
+  border-radius: 999px;
+  border: 1px solid rgba(251, 217, 69, 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  align-self: flex-start;
+  animation: fadeUp 0.8s var(--ease-out-soft) 0.4s both;
+}
+.hero-meta strong {
+  color: var(--nu-tour);
+  font-family: var(--font-serif);
+  font-size: 22px;
+  margin-right: 4px;
+}
+.hero-meta .dot {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--nu-tour);
+  opacity: 0.7;
+}
+
+/* ============ INFO SECTION ============ */
+.info {
+  padding: 80px;
+  background: var(--nu-powder);
+}
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr 1fr;
+  gap: 24px;
+  margin-bottom: 56px;
+}
+.info-card {
+  position: relative;
+  background: var(--nu-wisp);
+  border-radius: 28px;
+  padding: 36px 32px 40px;
+  box-shadow: 0 8px 24px rgba(0, 38, 61, 0.10);
+  border: 1px solid var(--nu-cloud);
+  animation: fadeUp 0.7s var(--ease-out-soft) both;
+  display: flex; flex-direction: column;
+}
+.info-card:nth-child(1) { animation-delay: 0.1s; }
+.info-card:nth-child(2) { animation-delay: 0.2s; }
+.info-card:nth-child(3) { animation-delay: 0.3s; }
+.info-eyebrow {
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 0.32em; text-transform: uppercase;
+  color: var(--nu-blue);
+  margin-bottom: 8px;
+}
+.info-title {
+  font-family: var(--font-serif);
+  font-size: 32px; line-height: 1.1;
+  color: var(--nu-midnight);
+  margin: 0 0 24px;
+  letter-spacing: -0.01em;
+}
+
+/* HOURS */
+.hours-list {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: column;
+  flex: 1;
+}
+.hours-row {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 8px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--nu-cloud);
+  font-size: 16px;
+}
+.hours-row:last-child { border-bottom: none; }
+.hours-day {
+  font-weight: 700;
+  color: var(--nu-navy);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  font-size: 17px;
+}
+.hours-time {
+  font-family: var(--font-serif);
+  color: var(--nu-midnight);
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  text-align: right;
+}
+.hours-closed {
+  margin-top: 18px;
+  padding: 12px 16px;
+  background: var(--nu-powder);
+  border-left: 3px solid var(--nu-amber);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--nu-navy);
+}
+
+/* EXPECT */
+.expect-list {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: column;
+  gap: 16px;
+}
+.expect-row {
+  display: flex; align-items: flex-start; gap: 18px;
+  padding: 18px 20px;
+  background: var(--nu-powder);
+  border-radius: 16px;
+  border: 1px solid var(--nu-cloud);
+  transition: transform 0.3s var(--ease-out-soft), box-shadow 0.3s;
+}
+.expect-row:hover {
+  transform: translateX(6px);
+  box-shadow: 0 6px 16px rgba(0, 38, 61, 0.08);
+}
+.expect-icon {
+  font-family: var(--font-serif);
+  font-size: 30px;
+  color: var(--nu-blue);
+  line-height: 1;
+  flex-shrink: 0;
+  width: 36px; text-align: center;
+}
+.expect-text {
+  font-size: 17px; line-height: 1.45;
+  color: var(--nu-midnight);
+  font-weight: 500;
+}
+
+/* CONTACT */
+.contact-card { display: flex; flex-direction: column; }
+.contact-row {
+  display: flex; align-items: center; gap: 18px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--nu-cloud);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s;
+}
+.contact-row:hover:not(.contact-row--static) {
+  transform: translateX(4px);
+}
+.contact-row:last-child { border-bottom: none; }
+.contact-icon {
+  font-size: 32px;
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  background: var(--nu-powder);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  color: var(--nu-blue);
+}
+.contact-label {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--nu-navy);
+  opacity: 0.7;
+  margin-bottom: 2px;
+}
+.contact-value {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  color: var(--nu-midnight);
+  font-weight: 700;
+}
+
+/* DIRECTION STRIP */
+.direction-strip {
+  display: flex; align-items: stretch;
+  background: linear-gradient(135deg, var(--nu-navy) 0%, var(--nu-blue) 100%);
+  border-radius: 28px;
+  padding: 32px 40px;
+  gap: 24px;
+  align-items: center;
+  box-shadow: 0 16px 40px rgba(0, 38, 61, 0.25);
+  animation: fadeUp 0.7s var(--ease-out-soft) 0.4s both;
+}
+.ds-step {
+  flex: 1;
+  display: flex; align-items: center; gap: 18px;
+  color: var(--nu-wisp);
+}
+.ds-num {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: var(--nu-tour);
+  color: var(--nu-midnight);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-serif);
+  font-size: 28px; font-weight: 700;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(251, 217, 69, 0.4);
+}
+.ds-text {
+  font-size: 19px; line-height: 1.4;
+  color: var(--nu-wisp);
+}
+.ds-text strong {
+  color: var(--nu-tour);
+  font-weight: 800;
+}
+.ds-arrow {
+  font-size: 56px;
+  color: var(--nu-tour);
+  font-family: var(--font-serif);
+  flex-shrink: 0;
+  animation: bounce-arrow 1.4s ease-in-out infinite;
+}
+@keyframes bounce-arrow {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(10px); }
+}
+
+.bottom-hint {
+  text-align: center;
+  font-size: 16px;
+  color: var(--nu-navy);
+  opacity: 0.6;
+  margin: 40px 0 0;
+  letter-spacing: 0.04em;
+}
+.bottom-hint strong {
+  color: var(--nu-midnight);
+  opacity: 1;
+}
+
+/* Common fadeUp used above */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile / narrow */
+@media (max-width: 720px) {
+  .hero { height: auto; padding-bottom: 60px; }
+  .hero-content { max-width: 100%; padding: 60px 32px; }
+  .hero-title { font-size: 64px; }
+  .hero-blurb { font-size: 20px; }
+  .big-arrow { display: none; }
+  .you-are-here { top: auto; bottom: 30px; left: 32px; }
+  .info { padding: 40px 24px; }
+  .info-grid { grid-template-columns: 1fr; gap: 20px; }
+  .direction-strip { flex-direction: column; padding: 24px; gap: 16px; }
+  .ds-arrow { transform: rotate(90deg); }
+}
+</style>
