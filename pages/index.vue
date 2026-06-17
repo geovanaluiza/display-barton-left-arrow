@@ -25,6 +25,19 @@ function closeContact() {
   activeContact.value = null
 }
 
+// === What-to-Expect info modal — tapping Apply / Visit / Aid reveals
+//   a short description of what the Admissions Office can help with.
+type HelpKey = 'apply' | 'visit' | 'aid' | null
+const activeHelp = ref<HelpKey>(null)
+const isHelpOpen = computed(() => activeHelp.value !== null)
+
+function openHelp(key: HelpKey) {
+  activeHelp.value = key
+}
+function closeHelp() {
+  activeHelp.value = null
+}
+
 // === Hero photo (First Day — students arriving) ===
 const lobbyPhoto = '250825FirstDayEdited (11).jpg'
 
@@ -45,9 +58,39 @@ const admission = {
   phone: '425-822-8266',
   email: 'admissions@northwestu.edu',
   what: [
-    { icon: '✦', label: 'Apply',     text: 'Application help and transcript review.' },
-    { icon: '◈', label: 'Visit',     text: 'Schedule a campus tour before you leave.' },
-    { icon: '✣', label: 'Aid',       text: 'Financial aid questions, answered on site.' }
+    {
+      icon: '✦', label: 'Apply', key: 'apply' as HelpKey,
+      title: 'Apply to Northwest',
+      summary: 'Get help with your application and admissions process.',
+      bullets: [
+        'Review transcripts and test scores in person',
+        'Walk through the application step-by-step',
+        'Get answers about prerequisites and deadlines',
+        'Submit your application on the spot if ready'
+      ]
+    },
+    {
+      icon: '◈', label: 'Visit', key: 'visit' as HelpKey,
+      title: 'Visit the campus',
+      summary: 'Schedule a campus tour before you leave.',
+      bullets: [
+        'Guided walking tour of Barton Hall and Pecota',
+        'See a residence hall, the chapel, and a classroom',
+        'Meet current students and faculty',
+        'Optional meal at the dining hall'
+      ]
+    },
+    {
+      icon: '✣', label: 'Aid', key: 'aid' as HelpKey,
+      title: 'Financial aid & scholarships',
+      summary: 'Get answers about cost, aid, and scholarships.',
+      bullets: [
+        'Estimate your financial aid package',
+        'Learn about Northwest academic scholarships',
+        'FAFSA filing questions, answered on site',
+        'Payment plan and tuition information'
+      ]
+    }
   ]
 }
 </script>
@@ -145,12 +188,20 @@ const admission = {
         <div class="info-card expect-card">
           <div class="info-eyebrow">What to expect</div>
           <ul class="expect-icons">
-            <li v-for="(w, i) in admission.what" :key="i" class="expect-icon-item" :title="w.text">
+            <li v-for="(w, i) in admission.what" :key="i"
+                class="expect-icon-item"
+                role="button"
+                tabindex="0"
+                @click="openHelp(w.key)"
+                @keydown.enter="openHelp(w.key)"
+                @keydown.space.prevent="openHelp(w.key)"
+            >
               <span class="expect-icon-mark">{{ w.icon }}</span>
               <span class="expect-icon-label">{{ w.label }}</span>
+              <span class="expect-icon-info" aria-hidden="true">i</span>
             </li>
           </ul>
-          <div class="expect-summary">Help with applications, tours, and aid questions.</div>
+          <div class="expect-summary">Tap any topic to learn more.</div>
         </div>
 
         <!-- CONTACT -->
@@ -205,6 +256,38 @@ const admission = {
             </a>
             <div class="modal-hint">We reply within one business day</div>
           </div>
+        </div>
+      </div>
+    </transition>
+
+    <!-- ============================================================== -->
+    <!-- HELP MODAL — shows details about Apply / Visit / Aid topics   -->
+    <!-- ============================================================== -->
+    <transition name="modal">
+      <div v-if="isHelpOpen" class="contact-modal" @click="closeHelp">
+        <div class="contact-modal-card help-modal-card" @click.stop>
+          <button class="modal-close" type="button" @click="closeHelp" aria-label="Close">
+            <span class="close-line close-line--1" />
+            <span class="close-line close-line--2" />
+          </button>
+
+          <template v-for="w in admission.what" :key="w.key">
+            <div v-if="activeHelp === w.key" class="modal-content">
+              <div class="help-modal-icon">{{ w.icon }}</div>
+              <div class="modal-eyebrow">What the Admissions Office can help with</div>
+              <h2 class="help-modal-title">{{ w.title }}</h2>
+              <p class="help-modal-summary">{{ w.summary }}</p>
+              <ul class="help-bullets">
+                <li v-for="(b, bi) in w.bullets" :key="bi">
+                  <span class="bullet-mark">✓</span>
+                  <span class="bullet-text">{{ b }}</span>
+                </li>
+              </ul>
+              <button class="help-modal-cta" type="button" @click="closeHelp">
+                Got it
+              </button>
+            </div>
+          </template>
         </div>
       </div>
     </transition>
@@ -513,21 +596,21 @@ const admission = {
 /* === HOURS (compact, two rows) === */
 .hours-block {
   display: flex; flex-direction: column;
-  gap: 22px;
+  gap: 14px;
   flex: 1;
 }
 .hours-main {
   display: flex; flex-direction: column;
-  gap: 8px;
+  gap: 4px;
 }
 .hours-days {
-  font-size: 11px; font-weight: 700;
-  letter-spacing: 0.32em; text-transform: uppercase;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.28em; text-transform: uppercase;
   color: var(--nu-blue);
 }
 .hours-time-main {
   font-family: var(--font-serif);
-  font-size: 22px; line-height: 1.05;
+  font-size: 17px; line-height: 1.05;
   color: var(--nu-midnight);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -537,8 +620,8 @@ const admission = {
   background: var(--nu-cloud);
 }
 .hours-closed {
-  margin-top: 22px;
-  font-size: 13px;
+  margin-top: 14px;
+  font-size: 11px;
   color: var(--nu-navy);
   opacity: 0.6;
   letter-spacing: 0.04em;
@@ -768,6 +851,104 @@ const admission = {
   margin-top: 6px;
 }
 
+/* === HELP MODAL — What to Expect details === */
+.help-modal-card {
+  max-width: 820px;
+}
+.help-modal-icon {
+  font-family: var(--font-serif);
+  font-size: 84px;
+  color: var(--nu-blue);
+  line-height: 1;
+  margin-bottom: 8px;
+  animation: floatY 3s ease-in-out infinite;
+}
+.help-modal-title {
+  font-family: var(--font-serif);
+  font-size: 44px; line-height: 1.1;
+  color: var(--nu-midnight);
+  margin: 0 0 14px;
+  letter-spacing: -0.01em;
+  text-align: center;
+}
+.help-modal-summary {
+  font-size: 18px; line-height: 1.5;
+  color: var(--nu-navy);
+  margin: 0 0 28px;
+  text-align: center;
+  max-width: 56ch;
+}
+.help-bullets {
+  list-style: none; margin: 0 0 28px; padding: 0;
+  display: flex; flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+.help-bullets li {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 14px 18px;
+  background: var(--nu-powder);
+  border-radius: 12px;
+  border-left: 3px solid var(--nu-blue);
+  font-size: 16px; line-height: 1.45;
+  color: var(--nu-midnight);
+  font-weight: 500;
+}
+.bullet-mark {
+  flex-shrink: 0;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--nu-leaf);
+  color: var(--nu-wisp);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700;
+  margin-top: 1px;
+}
+.bullet-text { flex: 1; }
+.help-modal-cta {
+  margin-top: 8px;
+  padding: 14px 36px;
+  background: var(--nu-blue);
+  color: var(--nu-wisp);
+  border: none;
+  border-radius: 999px;
+  font-size: 16px; font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(0, 104, 187, 0.28);
+  transition: transform 0.2s var(--ease-out-soft), box-shadow 0.2s, background 0.2s;
+}
+.help-modal-cta:hover {
+  transform: translateY(-2px);
+  background: var(--nu-navy);
+  box-shadow: 0 10px 22px rgba(0, 38, 61, 0.32);
+}
+
+/* === Info "i" badge on What to Expect icons === */
+.expect-icon-info {
+  position: absolute;
+  top: 8px; right: 8px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: rgba(0, 38, 61, 0.08);
+  color: var(--nu-navy);
+  font-family: var(--font-serif);
+  font-size: 11px; font-weight: 700;
+  font-style: italic;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0.55;
+  transition: opacity 0.2s, background 0.2s, color 0.2s;
+  pointer-events: none;
+}
+.expect-icon-item:hover .expect-icon-info {
+  opacity: 1;
+  background: var(--nu-blue);
+  color: var(--nu-wisp);
+}
+.expect-icon-item {
+  position: relative;
+}
+
 /* Modal transition */
 .modal-enter-active,
 .modal-leave-active {
@@ -809,5 +990,9 @@ const admission = {
   .contact-modal-card { padding: 48px 28px 36px; }
   .modal-value { font-size: 32px; padding: 14px 18px; }
   .modal-icon-big { font-size: 72px; }
+  .help-modal-title { font-size: 30px; }
+  .help-modal-summary { font-size: 16px; }
+  .help-modal-icon { font-size: 64px; }
+  .help-bullets li { font-size: 15px; }
 }
 </style>
