@@ -573,7 +573,6 @@ const admission = {
   display: flex; flex-direction: column;
   align-items: stretch;
   min-width: 0;
-  overflow: hidden;
 }
 .info-card:nth-child(1) { animation-delay: 0.1s; }
 .info-card:nth-child(2) { animation-delay: 0.2s; }
@@ -581,6 +580,9 @@ const admission = {
 .info-card.contact-card {
   padding-left: 18px;
   padding-right: 54px;
+}
+.info-card.expect-card {
+  overflow: visible;
 }
 .info-card:nth-child(3) { animation-delay: 0.3s; }
 .info-eyebrow {
@@ -641,7 +643,8 @@ const admission = {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-auto-rows: 1fr;
-  gap: 22px;
+  gap: 24px;
+  justify-content: center;
   margin-bottom: 24px;
   align-items: stretch;
 }
@@ -649,10 +652,10 @@ const admission = {
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
   gap: 10px;
-  aspect-ratio: 1;
+  min-height: 110px;
   padding: 14px 8px;
   background: var(--nu-powder);
-  border-radius: 16px;
+  border-radius: 18px;
   border: 1px solid var(--nu-cloud);
   transition: transform 0.3s var(--ease-out-soft), box-shadow 0.3s, border-color 0.3s;
   cursor: help;
@@ -664,16 +667,16 @@ const admission = {
 }
 .expect-icon-mark {
   font-family: var(--font-serif);
-  font-size: 38px;
+  font-size: 46px;
   color: var(--nu-blue);
   line-height: 1;
 }
 .expect-icon-label {
-  font-size: 12px; font-weight: 700;
-  letter-spacing: 0.18em; text-transform: uppercase;
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 0.20em; text-transform: uppercase;
   color: var(--nu-midnight);
   text-align: center;
-  line-height: 1.1;
+  line-height: 1.15;
 }
 .expect-summary {
   font-size: 13px;
