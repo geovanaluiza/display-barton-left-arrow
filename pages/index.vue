@@ -38,6 +38,9 @@ function closeHelp() {
   activeHelp.value = null
 }
 
+// === Office Hours — compact status first, full schedule on tap ===
+const hoursExpanded = ref(false)
+
 // === Hero photo (First Day — students arriving) ===
 const lobbyPhoto = '250825FirstDayEdited (11).jpg'
 
@@ -167,26 +170,42 @@ const admission = {
     <!-- ============ INFO: hours + what to expect ============ -->
     <section class="info">
       <div class="info-grid">
-        <!-- HOURS -->
+        <!-- HOURS (compact, status-focused) -->
         <div class="info-card hours-card">
           <div class="info-eyebrow">Office Hours</div>
-          <div class="hours-block">
-            <div class="hours-main">
-              <span class="hours-days">Mon&ndash;Thu</span>
-              <span class="hours-time-main">8:00 AM &ndash; 5:00 PM</span>
-            </div>
-            <div class="hours-block-divider" />
-            <div class="hours-main">
-              <span class="hours-days">Friday</span>
-              <span class="hours-time-main">8:00 AM &ndash; 4:00 PM</span>
-            </div>
+          <div class="hours-status">
+            <span class="status-dot" />
+            <span class="status-text">Open today until 5 PM</span>
           </div>
-          <div class="hours-closed">Closed weekends</div>
+          <button class="hours-toggle" type="button" @click="hoursExpanded = !hoursExpanded">
+            {{ hoursExpanded ? 'Hide full schedule' : 'See full schedule' }}
+          </button>
+          <transition name="expand">
+            <div v-if="hoursExpanded" class="hours-detail">
+              <div class="hours-row">
+                <span class="hours-day-name">Mon &ndash; Thu</span>
+                <span class="hours-time-text">8:00 AM &ndash; 5:00 PM</span>
+              </div>
+              <div class="hours-row">
+                <span class="hours-day-name">Friday</span>
+                <span class="hours-time-text">8:00 AM &ndash; 4:00 PM</span>
+              </div>
+              <div class="hours-closed">Closed weekends</div>
+            </div>
+          </transition>
         </div>
 
-        <!-- WHAT TO EXPECT -->
-        <div class="info-card expect-card">
+        <!-- PRIMARY CTA — Schedule a Tour (highlighted) -->
+        <div class="info-card expect-card expect-card--primary">
           <div class="info-eyebrow">What to expect</div>
+          <button class="primary-cta" type="button" @click="openHelp('visit')">
+            <span class="primary-cta-icon">◈</span>
+            <span class="primary-cta-text">
+              <span class="primary-cta-line">Schedule a</span>
+              <span class="primary-cta-line primary-cta-line--bold">Campus Tour</span>
+            </span>
+            <span class="primary-cta-arrow">&rarr;</span>
+          </button>
           <ul class="expect-icons">
             <li v-for="(w, i) in admission.what" :key="i"
                 class="expect-icon-item"
@@ -201,10 +220,9 @@ const admission = {
               <span class="expect-icon-info" aria-hidden="true">i</span>
             </li>
           </ul>
-          <div class="expect-summary">Tap any topic to learn more.</div>
         </div>
 
-        <!-- CONTACT -->
+        <!-- CONTACT (secondary, smaller) -->
         <div class="info-card contact-card">
           <div class="info-eyebrow">Reach us</div>
           <div class="contact-grid">
@@ -302,7 +320,7 @@ const admission = {
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
   touch-action: pan-y;
-  background: var(--nu-powder);
+  background: var(--nu-wisp);
   opacity: 0;
   transform: translateY(8px);
   transition: opacity 0.6s var(--ease-out-soft), transform 0.6s var(--ease-out-soft);
@@ -314,7 +332,7 @@ const admission = {
 .hero {
   position: relative;
   width: 100%;
-  height: 1180px;
+  height: 1280px;
   overflow: hidden;
   background: var(--nu-midnight);
 }
@@ -553,7 +571,6 @@ const admission = {
 /* ============ INFO SECTION ============ */
 .info {
   padding: 100px 80px;
-  background: var(--nu-powder);
 }
 .info-grid {
   display: grid;
@@ -600,65 +617,180 @@ const admission = {
 }
 
 /* HOURS */
-/* === HOURS (compact, two rows) === */
-.hours-block {
-  display: flex; flex-direction: column;
-  gap: 14px;
-  flex: 1;
+/* === HOURS (status-first, full schedule on tap) === */
+.hours-status {
+  display: flex; align-items: center; gap: 12px;
+  padding: 18px 0 20px;
+  border-bottom: 1px solid var(--nu-cloud);
+  margin-bottom: 18px;
 }
-.hours-main {
-  display: flex; flex-direction: column;
-  gap: 4px;
+.status-dot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--nu-leaf);
+  box-shadow: 0 0 0 6px rgba(68, 186, 130, 0.18);
+  animation: pulse-status 1.6s ease-in-out infinite;
+  flex-shrink: 0;
 }
-.hours-days {
-  font-size: 10px; font-weight: 700;
-  letter-spacing: 0.28em; text-transform: uppercase;
-  color: var(--nu-blue);
+@keyframes pulse-status {
+  0%, 100% { box-shadow: 0 0 0 6px rgba(68, 186, 130, 0.18); }
+  50%      { box-shadow: 0 0 0 12px rgba(68, 186, 130, 0); }
 }
-.hours-time-main {
+.status-text {
   font-family: var(--font-serif);
-  font-size: 17px; line-height: 1.05;
+  font-size: 26px; line-height: 1.1;
   color: var(--nu-midnight);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
+  letter-spacing: -0.01em;
 }
-.hours-block-divider {
-  height: 1px;
-  background: var(--nu-cloud);
-}
-.hours-closed {
-  margin-top: 14px;
-  padding-top: 18px;
-  border-top: 1px solid var(--nu-cloud);
-  font-size: 13px;
-  color: var(--nu-navy);
-  opacity: 0.65;
+.hours-toggle {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent;
+  border: 1px solid var(--nu-cloud);
+  color: var(--nu-blue);
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 13px; font-weight: 700;
   letter-spacing: 0.04em;
-  font-weight: 600;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: background 0.2s, border-color 0.2s;
+}
+.hours-toggle:hover {
+  background: var(--nu-powder);
+  border-color: var(--nu-blue);
+}
+.hours-detail {
+  display: flex; flex-direction: column;
+  gap: 8px;
+  padding-top: 18px;
+  margin-top: 6px;
+  border-top: 1px solid var(--nu-cloud);
+}
+.hours-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-size: 14px;
+  color: var(--nu-midnight);
+}
+.hours-day-name {
+  font-weight: 700;
+}
+.hours-time-text {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+}
+.expand-enter-active,
+.expand-leave-active {
+  transition: opacity 0.3s var(--ease-out-soft),
+              max-height 0.4s var(--ease-out-soft);
+  overflow: hidden;
+}
+.expand-enter-from,
+.expand-leave-to {
+  opacity: 0;
+  max-height: 0;
+}
+.expand-enter-to,
+.expand-leave-from {
+  opacity: 1;
+  max-height: 200px;
 }
 
-/* === WHAT TO EXPECT (icons + labels + summary) === */
+/* === WHAT TO EXPECT (primary CTA + helper icons) === */
+.expect-card--primary {
+  background: linear-gradient(160deg, var(--nu-wisp) 0%, #fdf7e8 100%);
+  border-color: var(--nu-tour);
+  position: relative;
+}
+.expect-card--primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 28px;
+  background: linear-gradient(135deg, rgba(251, 217, 69, 0.08) 0%, rgba(255, 188, 45, 0.04) 100%);
+  pointer-events: none;
+}
+.expect-card--primary > * { position: relative; z-index: 1; }
+
+.primary-cta {
+  display: flex; align-items: center; gap: 18px;
+  width: 100%;
+  padding: 24px 26px;
+  margin-bottom: 24px;
+  background: linear-gradient(135deg, var(--nu-navy) 0%, var(--nu-blue) 100%);
+  color: var(--nu-wisp);
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  box-shadow: 0 12px 28px rgba(0, 38, 61, 0.28);
+  transition: transform 0.25s var(--ease-out-soft), box-shadow 0.25s, filter 0.25s;
+}
+.primary-cta:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 40px rgba(0, 38, 61, 0.36);
+  filter: brightness(1.06);
+}
+.primary-cta:active {
+  transform: translateY(-1px);
+}
+.primary-cta-icon {
+  font-family: var(--font-serif);
+  font-size: 44px;
+  color: var(--nu-tour);
+  line-height: 1;
+  flex-shrink: 0;
+}
+.primary-cta-text {
+  flex: 1;
+  display: flex; flex-direction: column;
+  gap: 2px;
+}
+.primary-cta-line {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.15;
+}
+.primary-cta-line--bold {
+  font-family: var(--font-serif);
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+}
+.primary-cta-arrow {
+  font-size: 36px;
+  color: var(--nu-tour);
+  flex-shrink: 0;
+  transition: transform 0.25s var(--ease-out-soft);
+}
+.primary-cta:hover .primary-cta-arrow {
+  transform: translateX(6px);
+}
+
 .expect-icons {
   list-style: none; margin: 0; padding: 0;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-auto-rows: 1fr;
-  gap: 24px;
+  gap: 14px;
   justify-content: center;
-  margin-bottom: 24px;
   align-items: stretch;
 }
 .expect-icon-item {
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  gap: 10px;
-  min-height: 110px;
-  padding: 14px 8px;
-  background: var(--nu-powder);
-  border-radius: 18px;
+  gap: 8px;
+  min-height: 88px;
+  padding: 12px 6px;
+  background: var(--nu-wisp);
+  border-radius: 14px;
   border: 1px solid var(--nu-cloud);
   transition: transform 0.3s var(--ease-out-soft), box-shadow 0.3s, border-color 0.3s;
-  cursor: help;
+  cursor: pointer;
+  position: relative;
 }
 .expect-icon-item:hover {
   transform: translateY(-3px);
@@ -667,27 +799,16 @@ const admission = {
 }
 .expect-icon-mark {
   font-family: var(--font-serif);
-  font-size: 46px;
+  font-size: 32px;
   color: var(--nu-blue);
   line-height: 1;
 }
 .expect-icon-label {
-  font-size: 13px; font-weight: 700;
-  letter-spacing: 0.20em; text-transform: uppercase;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--nu-midnight);
   text-align: center;
   line-height: 1.15;
-}
-.expect-summary {
-  font-size: 13px;
-  line-height: 1.5;
-  color: var(--nu-navy);
-  opacity: 0.65;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  padding-top: 18px;
-  border-top: 1px solid var(--nu-cloud);
-  margin-top: auto;
 }
 
 /* === CONTACT (compact icon grid) === */
