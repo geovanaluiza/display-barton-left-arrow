@@ -466,7 +466,7 @@ const admission = {
 /* === WAYFINDING ARROW: static sign-style indicator (solid triangle, no track) === */
 .big-arrow {
   position: absolute;
-  top: 52%; right: 3%;
+  top: 58%; right: 2%;
   transform: translateY(-50%);
   z-index: 4;
   display: flex; flex-direction: row; align-items: center;
@@ -484,7 +484,7 @@ const admission = {
 }
 
 .arrow-icon {
-  width: 820px;
+  width: 1000px;
   flex-shrink: 0;
   filter: drop-shadow(0 18px 40px rgba(0, 0, 0, 0.55));
   animation: pulse-tip 2s ease-in-out infinite;
@@ -508,14 +508,14 @@ const admission = {
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
 }
 .caption-line {
-  font-size: 16px; font-weight: 700;
+  font-size: 18px; font-weight: 700;
   letter-spacing: 0.28em; text-transform: uppercase;
   color: var(--nu-tour);
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 .caption-name {
   font-family: var(--font-serif);
-  font-size: 52px; line-height: 1.05;
+  font-size: 64px; line-height: 1.05;
   color: var(--nu-wisp);
   letter-spacing: -0.01em;
 }
