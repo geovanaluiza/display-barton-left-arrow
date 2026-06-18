@@ -100,12 +100,13 @@ const admission = {
 
 <template>
   <div class="barton" :class="{ 'is-loaded': visible }">
-    <!-- ============ HERO: Lobby photo + huge right arrow ============ -->
+    <!-- ============ HERO: full-height photo + everything overlay ============ -->
     <section class="hero">
       <div class="hero-photo">
         <img :src="`/images/${lobbyPhoto}`" alt="Barton Hall lobby" />
       </div>
       <div class="hero-veil" />
+      <div class="hero-bottom-grad" />
 
       <!-- "You are here" pin -->
       <div class="you-are-here">
@@ -165,83 +166,79 @@ const admission = {
           <span>Office of Admissions</span>
         </div>
       </div>
-    </section>
 
-    <!-- ============ INFO: hours + what to expect ============ -->
-    <section class="info">
-      <div class="info-grid">
-        <!-- HOURS (compact, status-focused) -->
-        <div class="info-card hours-card">
-          <div class="info-eyebrow">Office Hours</div>
-          <div class="hours-status">
-            <span class="status-dot" />
-            <span class="status-text">Open today until 5 PM</span>
-          </div>
-          <button class="hours-toggle" type="button" @click="hoursExpanded = !hoursExpanded">
-            {{ hoursExpanded ? 'Hide full schedule' : 'See full schedule' }}
-          </button>
-          <transition name="expand">
-            <div v-if="hoursExpanded" class="hours-detail">
-              <div class="hours-row">
-                <span class="hours-day-name">Mon &ndash; Thu</span>
-                <span class="hours-time-text">8:00 AM &ndash; 5:00 PM</span>
-              </div>
-              <div class="hours-row">
-                <span class="hours-day-name">Friday</span>
-                <span class="hours-time-text">8:00 AM &ndash; 4:00 PM</span>
-              </div>
-              <div class="hours-closed">Closed weekends</div>
+      <!-- FLOATING CARDS OVERLAY — anchored to bottom of hero photo -->
+      <div class="cards-overlay">
+        <div class="info-grid">
+          <!-- HOURS (compact, status-focused) -->
+          <div class="info-card hours-card">
+            <div class="info-eyebrow">Office Hours</div>
+            <div class="hours-status">
+              <span class="status-dot" />
+              <span class="status-text">Open today until 5 PM</span>
             </div>
-          </transition>
-        </div>
-
-        <!-- PRIMARY CTA — Schedule a Tour (highlighted) -->
-        <div class="info-card expect-card expect-card--primary">
-          <div class="info-eyebrow">What to expect</div>
-          <button class="primary-cta" type="button" @click="openHelp('visit')">
-            <span class="primary-cta-icon">◈</span>
-            <span class="primary-cta-text">
-              <span class="primary-cta-line">Schedule a</span>
-              <span class="primary-cta-line primary-cta-line--bold">Campus Tour</span>
-            </span>
-            <span class="primary-cta-arrow">&rarr;</span>
-          </button>
-          <ul class="expect-icons">
-            <li v-for="(w, i) in admission.what" :key="i"
-                class="expect-icon-item"
-                role="button"
-                tabindex="0"
-                @click="openHelp(w.key)"
-                @keydown.enter="openHelp(w.key)"
-                @keydown.space.prevent="openHelp(w.key)"
-            >
-              <span class="expect-icon-mark">{{ w.icon }}</span>
-              <span class="expect-icon-label">{{ w.label }}</span>
-              <span class="expect-icon-info" aria-hidden="true">i</span>
-            </li>
-          </ul>
-        </div>
-
-        <!-- CONTACT (secondary, smaller) -->
-        <div class="info-card contact-card">
-          <div class="info-eyebrow">Reach us</div>
-          <div class="contact-grid">
-            <button class="contact-mini" type="button" @click="openContact('call')" title="Show phone number">
-              <span class="contact-mini-icon">☎</span>
-              <span class="contact-mini-label">Call</span>
+            <button class="hours-toggle" type="button" @click="hoursExpanded = !hoursExpanded">
+              {{ hoursExpanded ? 'Hide full schedule' : 'See full schedule' }}
             </button>
-            <button class="contact-mini" type="button" @click="openContact('email')" title="Show email">
-              <span class="contact-mini-icon">✉</span>
-              <span class="contact-mini-label">Email</span>
-            </button>
+            <transition name="expand">
+              <div v-if="hoursExpanded" class="hours-detail">
+                <div class="hours-row">
+                  <span class="hours-day-name">Mon &ndash; Thu</span>
+                  <span class="hours-time-text">8:00 AM &ndash; 5:00 PM</span>
+                </div>
+                <div class="hours-row">
+                  <span class="hours-day-name">Friday</span>
+                  <span class="hours-time-text">8:00 AM &ndash; 4:00 PM</span>
+                </div>
+                <div class="hours-closed">Closed weekends</div>
+              </div>
+            </transition>
           </div>
-          <div class="contact-detail">Barton Hall &middot; 2nd Floor</div>
+
+          <!-- PRIMARY CTA — Schedule a Tour -->
+          <div class="info-card expect-card expect-card--primary">
+            <div class="info-eyebrow">What to expect</div>
+            <button class="primary-cta" type="button" @click="openHelp('visit')">
+              <span class="primary-cta-icon">◈</span>
+              <span class="primary-cta-text">
+                <span class="primary-cta-line">Schedule a</span>
+                <span class="primary-cta-line primary-cta-line--bold">Campus Tour</span>
+              </span>
+              <span class="primary-cta-arrow">&rarr;</span>
+            </button>
+            <ul class="expect-icons">
+              <li v-for="(w, i) in admission.what" :key="i"
+                  class="expect-icon-item"
+                  role="button"
+                  tabindex="0"
+                  @click="openHelp(w.key)"
+                  @keydown.enter="openHelp(w.key)"
+                  @keydown.space.prevent="openHelp(w.key)"
+              >
+                <span class="expect-icon-mark">{{ w.icon }}</span>
+                <span class="expect-icon-label">{{ w.label }}</span>
+                <span class="expect-icon-info" aria-hidden="true">i</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- CONTACT (secondary) -->
+          <div class="info-card contact-card">
+            <div class="info-eyebrow">Reach us</div>
+            <div class="contact-grid">
+              <button class="contact-mini" type="button" @click="openContact('call')" title="Show phone number">
+                <span class="contact-mini-icon">☎</span>
+                <span class="contact-mini-label">Call</span>
+              </button>
+              <button class="contact-mini" type="button" @click="openContact('email')" title="Show email">
+                <span class="contact-mini-icon">✉</span>
+                <span class="contact-mini-label">Email</span>
+              </button>
+            </div>
+            <div class="contact-detail">Barton Hall &middot; 2nd Floor</div>
+          </div>
         </div>
       </div>
-
-      <p class="bottom-hint">
-        Welcome to <strong>Northwest University</strong> &middot; Kirkland, Washington &middot; Since 1934
-      </p>
     </section>
 
     <!-- ============================================================== -->
@@ -315,24 +312,19 @@ const admission = {
 <style scoped>
 .barton {
   position: absolute; inset: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-  touch-action: pan-y;
-  background: var(--nu-wisp);
+  overflow: hidden;
+  background: var(--nu-midnight);
   opacity: 0;
   transform: translateY(8px);
   transition: opacity 0.6s var(--ease-out-soft), transform 0.6s var(--ease-out-soft);
 }
 .barton.is-loaded { opacity: 1; transform: none; }
-.barton::-webkit-scrollbar { display: none; }
 
-/* ============ HERO ============ */
+/* ============ HERO — full-height, photo bleeds entire screen ============ */
 .hero {
   position: relative;
   width: 100%;
-  height: 1280px;
+  height: 1920px;
   overflow: hidden;
   background: var(--nu-midnight);
 }
@@ -353,8 +345,47 @@ const admission = {
 .hero-veil {
   position: absolute; inset: 0;
   background:
-    linear-gradient(90deg, rgba(0, 38, 61, 0.92) 0%, rgba(0, 38, 61, 0.72) 40%, rgba(0, 38, 61, 0.45) 70%, rgba(0, 38, 61, 0.25) 100%),
-    linear-gradient(180deg, rgba(0, 38, 61, 0.55) 0%, rgba(0, 38, 61, 0.10) 25%, rgba(0, 38, 61, 0.10) 55%, rgba(0, 38, 61, 0.88) 100%);
+    linear-gradient(90deg, rgba(0, 38, 61, 0.85) 0%, rgba(0, 38, 61, 0.55) 40%, rgba(0, 38, 61, 0.25) 70%, rgba(0, 38, 61, 0.10) 100%),
+    linear-gradient(180deg, rgba(0, 38, 61, 0.40) 0%, rgba(0, 38, 61, 0.05) 25%, rgba(0, 38, 61, 0.05) 45%, rgba(0, 38, 61, 0.30) 65%, rgba(0, 38, 61, 0.80) 85%, rgba(0, 38, 61, 0.95) 100%);
+}
+/* Bottom gradient — extra dark anchor for the floating cards */
+.hero-bottom-grad {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 60%;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 38, 61, 0.55) 50%, rgba(0, 38, 61, 0.92) 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* ================================================================ */
+/*  CARDS OVERLAY — floating glass cards anchored to bottom of hero */
+/* ================================================================ */
+.cards-overlay {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  z-index: 6;
+  padding: 40px 56px 56px;
+}
+.cards-overlay .info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1fr;
+  gap: 22px;
+  align-items: stretch;
+  margin: 0;
+}
+.cards-overlay .info-card {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+  border-radius: 28px;
+  padding: 22px 22px 20px;
+}
+.cards-overlay .info-card.expect-card--primary {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.94) 0%, rgba(253, 247, 232, 0.94) 100%);
+  border-color: var(--nu-tour);
 }
 
 /* "You are here" pin (top-left of hero) */
@@ -431,12 +462,17 @@ const admission = {
 /* === WAYFINDING ARROW: static sign-style indicator (solid triangle, no track) === */
 .big-arrow {
   position: absolute;
-  bottom: -2%; right: 4%;
-  z-index: 3;
+  top: 50%; right: 3%;
+  transform: translateY(-50%);
+  z-index: 4;
   display: flex; flex-direction: row; align-items: center;
   gap: 28px;
-  animation: fadeUp 1s var(--ease-out-soft) 0.5s both, nudge 3.6s ease-in-out 1.4s infinite;
+  animation: fadeUp 1s var(--ease-out-soft) 0.5s both, nudgeY 3.6s ease-in-out 1.4s infinite;
   pointer-events: none;
+}
+@keyframes nudgeY {
+  0%, 100% { transform: translate(0, -50%); }
+  50%      { transform: translate(-14px, -50%); }
 }
 @keyframes nudge {
   0%, 100% { transform: translate(0, 0); }
@@ -603,10 +639,10 @@ const admission = {
 }
 .info-card:nth-child(3) { animation-delay: 0.3s; }
 .info-eyebrow {
-  font-size: 13px; font-weight: 700;
+  font-size: 11px; font-weight: 700;
   letter-spacing: 0.32em; text-transform: uppercase;
   color: var(--nu-blue);
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 .info-title {
   font-family: var(--font-serif);
@@ -620,25 +656,25 @@ const admission = {
 /* === HOURS (status-first, full schedule on tap) === */
 .hours-status {
   display: flex; align-items: center; gap: 12px;
-  padding: 18px 0 20px;
+  padding: 12px 0 14px;
   border-bottom: 1px solid var(--nu-cloud);
-  margin-bottom: 18px;
+  margin-bottom: 12px;
 }
 .status-dot {
-  width: 14px; height: 14px;
+  width: 12px; height: 12px;
   border-radius: 50%;
   background: var(--nu-leaf);
-  box-shadow: 0 0 0 6px rgba(68, 186, 130, 0.18);
+  box-shadow: 0 0 0 5px rgba(68, 186, 130, 0.18);
   animation: pulse-status 1.6s ease-in-out infinite;
   flex-shrink: 0;
 }
 @keyframes pulse-status {
-  0%, 100% { box-shadow: 0 0 0 6px rgba(68, 186, 130, 0.18); }
-  50%      { box-shadow: 0 0 0 12px rgba(68, 186, 130, 0); }
+  0%, 100% { box-shadow: 0 0 0 5px rgba(68, 186, 130, 0.18); }
+  50%      { box-shadow: 0 0 0 10px rgba(68, 186, 130, 0); }
 }
 .status-text {
   font-family: var(--font-serif);
-  font-size: 26px; line-height: 1.1;
+  font-size: 22px; line-height: 1.1;
   color: var(--nu-midnight);
   letter-spacing: -0.01em;
 }
@@ -713,18 +749,18 @@ const admission = {
 .expect-card--primary > * { position: relative; z-index: 1; }
 
 .primary-cta {
-  display: flex; align-items: center; gap: 18px;
+  display: flex; align-items: center; gap: 16px;
   width: 100%;
-  padding: 24px 26px;
-  margin-bottom: 24px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
   background: linear-gradient(135deg, var(--nu-navy) 0%, var(--nu-blue) 100%);
   color: var(--nu-wisp);
   border: none;
-  border-radius: 20px;
+  border-radius: 18px;
   cursor: pointer;
   text-align: left;
   font-family: inherit;
-  box-shadow: 0 12px 28px rgba(0, 38, 61, 0.28);
+  box-shadow: 0 10px 24px rgba(0, 38, 61, 0.28);
   transition: transform 0.25s var(--ease-out-soft), box-shadow 0.25s, filter 0.25s;
 }
 .primary-cta:hover {
@@ -737,7 +773,7 @@ const admission = {
 }
 .primary-cta-icon {
   font-family: var(--font-serif);
-  font-size: 44px;
+  font-size: 36px;
   color: var(--nu-tour);
   line-height: 1;
   flex-shrink: 0;
@@ -745,23 +781,23 @@ const admission = {
 .primary-cta-text {
   flex: 1;
   display: flex; flex-direction: column;
-  gap: 2px;
+  gap: 0;
 }
 .primary-cta-line {
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 600;
   letter-spacing: 0.01em;
   line-height: 1.15;
 }
 .primary-cta-line--bold {
   font-family: var(--font-serif);
-  font-size: 30px;
+  font-size: 24px;
   font-weight: 700;
   letter-spacing: -0.01em;
   line-height: 1.05;
 }
 .primary-cta-arrow {
-  font-size: 36px;
+  font-size: 28px;
   color: var(--nu-tour);
   flex-shrink: 0;
   transition: transform 0.25s var(--ease-out-soft);
@@ -782,9 +818,9 @@ const admission = {
 .expect-icon-item {
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  gap: 8px;
-  min-height: 88px;
-  padding: 12px 6px;
+  gap: 6px;
+  min-height: 72px;
+  padding: 10px 6px;
   background: var(--nu-wisp);
   border-radius: 14px;
   border: 1px solid var(--nu-cloud);
@@ -799,13 +835,13 @@ const admission = {
 }
 .expect-icon-mark {
   font-family: var(--font-serif);
-  font-size: 32px;
+  font-size: 28px;
   color: var(--nu-blue);
   line-height: 1;
 }
 .expect-icon-label {
-  font-size: 11px; font-weight: 700;
-  letter-spacing: 0.18em; text-transform: uppercase;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
   color: var(--nu-midnight);
   text-align: center;
   line-height: 1.15;
@@ -825,12 +861,12 @@ const admission = {
 .contact-mini {
   display: flex; flex-direction: row;
   align-items: center; justify-content: center;
-  gap: 12px;
+  gap: 10px;
   width: 100%;
   height: 100%;
-  padding: 18px 14px;
+  padding: 14px 12px;
   background: var(--nu-powder);
-  border-radius: 16px;
+  border-radius: 14px;
   border: 1px solid var(--nu-cloud);
   text-decoration: none;
   color: inherit;
@@ -845,13 +881,13 @@ const admission = {
   border-color: var(--nu-blue);
 }
 .contact-mini-icon {
-  font-size: 30px;
+  font-size: 26px;
   color: var(--nu-blue);
   line-height: 1;
 }
 .contact-mini-label {
-  font-size: 11px; font-weight: 700;
-  letter-spacing: 0.22em; text-transform: uppercase;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.20em; text-transform: uppercase;
   color: var(--nu-navy);
 }
 .contact-detail {
