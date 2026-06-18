@@ -466,7 +466,7 @@ const admission = {
 /* === WAYFINDING ARROW: static sign-style indicator (solid triangle, no track) === */
 .big-arrow {
   position: absolute;
-  top: 58%; right: 2%;
+  top: 58%; right: 1%;
   transform: translateY(-50%);
   z-index: 4;
   display: flex; flex-direction: row; align-items: center;
