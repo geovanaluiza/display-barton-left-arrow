@@ -1,30 +1,14 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 
-// Phase 4.5: monitor URL + visibility + focus + auto-recovery.
-// Must run BEFORE the heartbeat so the first heartbeat carries
-// the security verdict.
-import { startSecurityMonitor } from '~/lib/securityMonitor'
-
-// Phase 3: report this display's health + current page to Supabase
-// every 30s. See composables/useDisplayHeartbeat.ts.
-import { useDisplayHeartbeat } from '~/composables/useDisplayHeartbeat'
-useDisplayHeartbeat()
-
-// Phase 4: subscribe to dashboard commands (reload / go_home /
-// blackout / emergency_message) and execute them. See
-// composables/useCommandListener.ts.
-import { useCommandListener } from '~/composables/useCommandListener'
-useCommandListener()
-
-// Phase 4 overlays — rendered outside the .stage so they cover the
-// full viewport (including the letterbox) and survive route changes.
+// Phase 3/4/4.5 ops are wired in plugins/display-ops.client.ts
+// (which calls useDisplayHeartbeat, useCommandListener, and
+// startSecurityMonitor). The composables and lib module also
+// self-start on import via a module-level side effect that writes
+// to document.documentElement — so production builds cannot
+// tree-shake them. App.vue just needs to render the overlays.
 import BlackoutOverlay from '~/components/BlackoutOverlay.vue'
 import EmergencyOverlay from '~/components/EmergencyOverlay.vue'
-
-// Diagnostics — visible only when import.meta.env.DEV is true OR
-// the operator sets localStorage 'nu-display:debugOverlay' = '1'
-// on the physical display.
 import CommandDebugOverlay from '~/components/CommandDebugOverlay.vue'
 
 const TARGET_W = 1080
@@ -47,7 +31,6 @@ onMounted(() => {
   fit()
   window.addEventListener('resize', fit)
   window.addEventListener('orientationchange', fit)
-  startSecurityMonitor()
 })
 onUnmounted(() => {
   window.removeEventListener('resize', fit)
@@ -62,8 +45,16 @@ onUnmounted(() => {
         <NuxtPage />
       </NuxtLayout>
     </div>
+
+    <!-- Phase 4 overlays: rendered outside the scaled stage so they
+         always cover the full viewport. Blackout sits below emergency
+         so an active emergency overlay hides the blackout marker. -->
     <BlackoutOverlay />
     <EmergencyOverlay />
+
+    <!-- Diagnostics: shows the realtime command listener status.
+         Auto-shown in dev; toggleable on the physical display via
+         localStorage('nu-display:debugOverlay') = '1'. -->
     <CommandDebugOverlay />
   </div>
 </template>
