@@ -8,6 +8,9 @@ import {
   executeEmergency,
   executeClearBlackout,
   executeClearEmergency,
+  // Phase 5C — Power Management (hardware-agnostic)
+  executePowerOff,
+  executePowerOn,
 } from '~/services/commandExecutor'
 
 /**
@@ -192,6 +195,22 @@ async function handleCommand(row: CommandRow) {
         await executeClearEmergency()
         await ackCommand(row.id)
         log('emergency cleared')
+        break
+      // Phase 5C — Power Management
+      // Hardware-agnostic. The executor dispatches to whatever
+      // backend is wired (Samsung VXT, LG webOS, BrightSign, WoL,
+      // CEC, GPIO relay, etc). Dashboard does not know or care.
+      case 'power_off':
+        await executePowerOff()
+        await writePowerState('off')
+        await ackCommand(row.id)
+        log('power_off executed')
+        break
+      case 'power_on':
+        await executePowerOn()
+        await writePowerState('on')
+        await ackCommand(row.id)
+        log('power_on executed')
         break
       default:
         lastError.value = `unknown command: ${row.command}`
