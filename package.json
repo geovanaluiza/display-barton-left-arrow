@@ -1,21 +1,22 @@
 {
     "version": "0.1.0",
-  "name": "nu-display",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
-  },
-  "devDependencies": {
-    "nuxt": "^3.13.2",
-    "vue": "^3.5.12",
-    "vue-router": "^4.4.5"
-  },
-  "dependencies": {
-    "@supabase/supabase-js": "^2.108.2"
-  }
+    "name": "nu-display",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "nuxt build",
+        "dev": "nuxt dev",
+        "generate": "nuxt generate",
+        "preview": "nuxt preview",
+        "postinstall": "nuxt prepare"
+    },
+    "devDependencies": {
+        "nuxt": "^3.13.2",
+        "vue": "^3.5.12",
+        "vue-router": "^4.4.5"
+    },
+    "dependencies": {
+        "@supabase/supabase-js": "^2.108.2",
+        "html2canvas": "^1.4.1"
+    }
 }
