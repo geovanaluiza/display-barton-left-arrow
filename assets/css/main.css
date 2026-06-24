@@ -337,9 +337,7 @@ a { color: var(--nu-blue); }
    still scales the whole 1080x1920 stage to fit the iframe.
    ========================================================= */
 
-.hero,
-.barton > .hero,
-section.hero {
+.kiosk-stage .hero {
   height: 1920px !important;
   min-height: 1920px !important;
   padding-bottom: 0 !important;
